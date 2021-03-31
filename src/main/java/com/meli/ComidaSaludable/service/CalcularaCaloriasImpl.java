@@ -6,6 +6,8 @@ import com.meli.ComidaSaludable.dtos.CaloriasDTO;
 import com.meli.ComidaSaludable.dtos.CaloriasIngredienteDTO;
 import com.meli.ComidaSaludable.dtos.IngredienteDTO;
 import com.meli.ComidaSaludable.dtos.PlatoDTO;
+import com.meli.ComidaSaludable.excepciones.CaloriasExcepciones;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
@@ -30,7 +32,7 @@ public class CalcularaCaloriasImpl implements CalculadoraCalorias{
         }
         return totalCalorias;
     }
-    public List<CaloriasIngredienteDTO>  obtenerMaxCalorias(PlatoDTO platoDTO) {
+    public List<CaloriasIngredienteDTO>  obtenerMaxCalorias(PlatoDTO platoDTO) throws CaloriasExcepciones {
         List<CaloriasIngredienteDTO> cal =new ArrayList<>();
         double calorias =0;
 
@@ -44,6 +46,8 @@ public class CalcularaCaloriasImpl implements CalculadoraCalorias{
                     calo.setCalories(calorias);
                     cal.add(calo);
 
+                }else{
+                    throw new CaloriasExcepciones("La Ingrediente no se ha encontrado","INGREDIENTE_NO_ENCONTRADO", null);
                 }
             }
         }
@@ -84,7 +88,7 @@ public class CalcularaCaloriasImpl implements CalculadoraCalorias{
     }
 
     @Override
-    public CaloriasDTO getCalorias(PlatoDTO platoDTO) {
+    public CaloriasDTO getCalorias(PlatoDTO platoDTO) throws CaloriasExcepciones {
         CaloriasDTO caloriasDTO = new CaloriasDTO();
         double totalcalorias = obtenerCalorias(platoDTO);
         List<CaloriasIngredienteDTO> cal= obtenerMaxCalorias(platoDTO);
